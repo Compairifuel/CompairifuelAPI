@@ -1,0 +1,6 @@
+###
+GET http://localhost:8080/oauth/?
+    response_type=code&
+    redirect_uri=http://localhost:8080/oauth/callback&
+    code_challenge=123242&
+    state={}
