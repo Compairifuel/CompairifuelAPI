@@ -1,9 +1,6 @@
 package org.compairifuel.compairifuelapi.authorization.service;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ForbiddenException;
@@ -13,9 +10,7 @@ import lombok.Cleanup;
 import lombok.extern.java.Log;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.compairifuel.compairifuelapi.authorization.service.domain.AccessTokenDomain;
-import org.compairifuel.compairifuelapi.utils.IEnvConfig;
 
-import javax.crypto.SecretKey;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
@@ -24,12 +19,11 @@ import java.util.*;
 @Log(topic = "AuthorizationServiceImpl")
 @Default
 public class AuthorizationServiceImpl implements IAuthorizationService {
-    private IEnvConfig envConfig;
-    private final String TOKEN_TYPE = "Bearer";
+    private AuthCodeValidatorServiceImpl authCodeValidatorService;
 
     @Inject
-    public void setEnvConfig(IEnvConfig envConfig) {
-        this.envConfig = envConfig;
+    public void setAuthCodeValidatorService(AuthCodeValidatorServiceImpl authCodeValidatorService) {
+        this.authCodeValidatorService = authCodeValidatorService;
     }
 
     @Override
@@ -59,7 +53,7 @@ public class AuthorizationServiceImpl implements IAuthorizationService {
         hashMap.put("redirect_uri", redirectUri);
         hashMap.put("client_id", clientId);
         hashMap.put("grant_type", grantType);
-        String authorizationCode = createJwtsToken(hashMap, new Date(System.currentTimeMillis() + expiresIn), new Date(System.currentTimeMillis()));
+        String authorizationCode = authCodeValidatorService.createJwtsToken(hashMap, new Date(System.currentTimeMillis() + expiresIn), new Date(System.currentTimeMillis()));
 
         return redirectToURI
                 .queryParam("state", state)
@@ -69,11 +63,7 @@ public class AuthorizationServiceImpl implements IAuthorizationService {
 
     @Override
     public AccessTokenDomain getAccessToken(String grantType, String authorizationCode, String redirectUri, String clientId, String codeVerifier) {
-        String secretKey = envConfig.getEnv("SECRET_KEY");
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        SecretKey key = Keys.hmacShaKeyFor(keyBytes);
-
-        Claims claims = retrieveJwtsClaims(authorizationCode);
+        Claims claims = authCodeValidatorService.retrieveJwtsClaims(authorizationCode);
 
         if (!Arrays.equals(Base64.getUrlDecoder().decode(claims.get("code_challenge", String.class)), DigestUtils.sha256(codeVerifier)) ||
                 !redirectUri.equals(claims.get("redirect_uri", String.class)) ||
@@ -83,31 +73,12 @@ public class AuthorizationServiceImpl implements IAuthorizationService {
             throw new ForbiddenException();
         }
 
-        long expiresIn = 3600000;
-
-        String accessToken = createJwtsToken(new HashMap<>(), new Date(System.currentTimeMillis() + expiresIn), new Date(System.currentTimeMillis()));
-
-        HashMap<String, Object> refreshTokenMap = new HashMap<>();
-        refreshTokenMap.put("code_challenge", claims.get("code_challenge", String.class));
-        refreshTokenMap.put("client_id", clientId);
-        String refreshToken = createJwtsToken(refreshTokenMap, new Date(System.currentTimeMillis() + (expiresIn * 2)), new Date(System.currentTimeMillis()));
-
-        AccessTokenDomain response = new AccessTokenDomain();
-        response.setAccessToken(accessToken);
-        response.setExpiresIn(expiresIn);
-        response.setTokenType(TOKEN_TYPE);
-        response.setRefreshToken(refreshToken);
-
-        return response;
+        return createAndBuildAccessTokenDomain(claims, clientId);
     }
 
     @Override
     public AccessTokenDomain getAccessTokenByRefreshToken(String grantType, String refreshToken, String clientId, String codeVerifier) {
-        String secretKey = envConfig.getEnv("SECRET_KEY");
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        SecretKey key = Keys.hmacShaKeyFor(keyBytes);
-
-        Claims claims = retrieveJwtsClaims(refreshToken);
+        Claims claims = authCodeValidatorService.retrieveJwtsClaims(refreshToken);
 
         if (!Arrays.equals(Base64.getUrlDecoder().decode(claims.get("code_challenge", String.class)), DigestUtils.sha256(codeVerifier)) ||
                 !clientId.equals(claims.get("client_id", String.class))
@@ -116,53 +87,22 @@ public class AuthorizationServiceImpl implements IAuthorizationService {
             throw new ForbiddenException();
         }
 
-        long expiresIn = 3600000;
+        return createAndBuildAccessTokenDomain(claims, clientId);
+    }
 
-        String accessToken = createJwtsToken(new HashMap<>(), new Date(System.currentTimeMillis() + expiresIn), new Date(System.currentTimeMillis()));
+    private AccessTokenDomain createAndBuildAccessTokenDomain(Claims claims, String clientId) {
+        String accessToken = authCodeValidatorService.createJwtsToken(new HashMap<>(), new Date(System.currentTimeMillis() + authCodeValidatorService.getExpiresIn()), new Date(System.currentTimeMillis()));
 
         HashMap<String, Object> refreshTokenMap = new HashMap<>();
         refreshTokenMap.put("code_challenge", claims.get("code_challenge", String.class));
         refreshTokenMap.put("client_id", clientId);
-        String newRefreshToken = createJwtsToken(refreshTokenMap, new Date(System.currentTimeMillis() + (expiresIn * 2)), new Date(System.currentTimeMillis()));
+        String refreshToken = authCodeValidatorService.createJwtsToken(refreshTokenMap, new Date(System.currentTimeMillis() + (authCodeValidatorService.getExpiresIn() * 2)), new Date(System.currentTimeMillis()));
 
-        AccessTokenDomain response = new AccessTokenDomain();
-        response.setAccessToken(accessToken);
-        response.setExpiresIn(expiresIn);
-        response.setTokenType(TOKEN_TYPE);
-        response.setRefreshToken(newRefreshToken);
-
-        return response;
-    }
-
-    private Claims retrieveJwtsClaims(String JwtToken) {
-        Claims claims;
-        try {
-            claims = Jwts
-                    .parser()
-                    .verifyWith(getSecretKey())
-                    .build()
-                    .parseSignedClaims(JwtToken)
-                    .getPayload();
-        } catch (SignatureException ex) {
-            log.warning("The token is not valid: " + ex.getMessage());
-            throw new ForbiddenException();
-        } catch (ExpiredJwtException ex) {
-            log.warning("The token has expired: " + ex.getMessage());
-            throw new ForbiddenException();
-        } catch (JwtException ex) {
-            log.severe("An error occured during the Jwts parser: " + ex.getMessage());
-            throw new InternalServerErrorException();
-        }
-
-        return claims;
-    }
-    private String createJwtsToken(HashMap<String, Object> claims, Date expiration, Date issuedAt) {
-        return Jwts.builder().claims(claims).signWith(getSecretKey()).expiration(expiration).issuedAt(issuedAt).compact();
-    }
-
-    private SecretKey getSecretKey() {
-        String secretKey = envConfig.getEnv("SECRET_KEY");
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
+        AccessTokenDomain accessTokenDomain = new AccessTokenDomain();
+        accessTokenDomain.setAccessToken(accessToken);
+        accessTokenDomain.setExpiresIn(authCodeValidatorService.getExpiresIn());
+        accessTokenDomain.setTokenType(authCodeValidatorService.getTokenType());
+        accessTokenDomain.setRefreshToken(refreshToken);
+        return accessTokenDomain;
     }
 }
