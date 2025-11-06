@@ -1,6 +1,44 @@
+@httpHost = http://localhost:8080
+@oauth_redirect_uri = http://localhost:8080/oauth/callback
+@oauth_client_id = <client_id_here>
+@oauth_code_challenge = pjGXfmpx1LUHqbxEB2KhEp5QXEA0XA5imOTeefSmmzI=
+@oauth_code_verifier = 123242
+
 ###
-GET http://localhost:8080/oauth/?
+GET {{httpHost}}/oauth/?
     response_type=code&
-    redirect_uri=http://localhost:8080/oauth/callback&
-    code_challenge=123242&
+    redirect_uri={{oauth_redirect_uri}}&
+    client_id={{oauth_client_id}}&
+    code_challenge={{oauth_code_challenge}}&
     state={}
+
+> {% client.global.set("oauth_code", response.body.code); %}
+
+###
+POST {{httpHost}}/oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&
+code={{oauth_code}}&
+redirect_uri={{oauth_redirect_uri}}&
+client_id={{oauth_client_id}}&
+code_verifier={{oauth_code_verifier}}
+
+> {% client.global.set("access_token", response.body.access_token);
+client.global.set("oauth_refresh_token", response.body.refresh_token);
+client.global.set("token_type", response.body.token_type); %}
+
+###
+GET {{httpHost}}/oauth/refresh?
+    grant_type=refresh_token&
+    refresh_token={{oauth_refresh_token}}&
+    client_id={{oauth_client_id}}&
+    code_verifier={{oauth_code_verifier}}
+
+> {% client.global.set("access_token", response.body.access_token);
+client.global.set("oauth_refresh_token", response.body.refresh_token);
+client.global.set("token_type", response.body.token_type); %}
+
+###
+GET {{httpHost}}/
+Authorization: {{token_type}} {{access_token}}
