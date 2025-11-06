@@ -28,7 +28,7 @@ public class GasStationController {
     @Path("/gasStations/{lat}/{lng}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getGasStations(@PathParam("lat") double latitude, @PathParam("lng") double longitude, @HeaderParam("Authorization") String authorization) {
-        authCodeValidatorController.authenticateToken(authorization.replace("Bearer","").trim());
+        authCodeValidatorController.authenticateToken(authorization);
 
         List<GasStationResponseDTO> gasStationEntities = gasStationService.getGasStations(latitude, longitude, 25000);
         return Response.ok().entity(gasStationEntities).build();
