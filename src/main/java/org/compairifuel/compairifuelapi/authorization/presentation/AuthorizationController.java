@@ -56,11 +56,7 @@ public class AuthorizationController {
     public Response getAccessToken(@FormParam("grant_type") @Pattern(regexp = "authorization_code", message = "grant_type must be set to “authorization_code”.") String grant_type, @FormParam("code") @NotBlank(message = "code cannot be blank!") String code, @FormParam("redirect_uri") @Pattern(regexp = "^([a-zA-Z]{2,}://[\\w_-]+(\\.[\\w_-]+)?([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?)$", message = "redirect_uri must be a valid uri") @NotBlank(message = "redirect_uri cannot be blank!") String redirect_uri, @FormParam("client_id") String client_id, @FormParam("code_verifier") @NotBlank(message = "code_verifier cannot be blank!") String code_verifier) {
         AccessTokenDomain accessTokenDomain = authorizationService.getAccessToken(grant_type, code, redirect_uri, client_id, code_verifier);
 
-        AccessTokenResponseDTO response = new AccessTokenResponseDTO();
-        response.setAccess_token(accessTokenDomain.getAccessToken());
-        response.setExpires_in(accessTokenDomain.getExpiresIn());
-        response.setToken_type(accessTokenDomain.getTokenType());
-        response.setRefresh_token(accessTokenDomain.getRefreshToken());
+        AccessTokenResponseDTO response = buildAccessTokenResponseDTO(accessTokenDomain);
 
         return Response.ok().entity(response).header("Cache-Control", "no-store").build();
     }
@@ -78,11 +74,7 @@ public class AuthorizationController {
     public Response getAccessTokenByRefreshToken(@QueryParam("grant_type") @Pattern(regexp = "(refresh_token)", message = "grant_type must be set to “refresh_token”.") String grant_type, @QueryParam("refresh_token") @NotBlank(message = "refresh_token cannot be blank!") String refresh_token, @QueryParam("client_id") String client_id, @QueryParam("code_verifier") @NotBlank(message = "code_verifier cannot be blank!") String code_verifier) {
         AccessTokenDomain accessTokenDomain = authorizationService.getAccessTokenByRefreshToken(grant_type, refresh_token, client_id, code_verifier);
 
-        AccessTokenResponseDTO response = new AccessTokenResponseDTO();
-        response.setAccess_token(accessTokenDomain.getAccessToken());
-        response.setExpires_in(accessTokenDomain.getExpiresIn());
-        response.setToken_type(accessTokenDomain.getTokenType());
-        response.setRefresh_token(accessTokenDomain.getRefreshToken());
+        AccessTokenResponseDTO response = buildAccessTokenResponseDTO(accessTokenDomain);
 
         return Response.ok().entity(response).header("Cache-Control", "no-store").build();
     }
@@ -92,5 +84,14 @@ public class AuthorizationController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response returnCallback(@QueryParam("code") String code, @QueryParam("state") String state){
         return Response.ok().entity("{\"code\":\""+code+"\",\"state\":\""+state+"\"}").build();
+    }
+
+    private AccessTokenResponseDTO buildAccessTokenResponseDTO(AccessTokenDomain accessTokenDomain) {
+        AccessTokenResponseDTO response = new AccessTokenResponseDTO();
+        response.setAccess_token(accessTokenDomain.getAccessToken());
+        response.setExpires_in(accessTokenDomain.getExpiresIn());
+        response.setToken_type(accessTokenDomain.getTokenType());
+        response.setRefresh_token(accessTokenDomain.getRefreshToken());
+        return response;
     }
 }
