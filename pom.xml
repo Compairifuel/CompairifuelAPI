@@ -18,6 +18,7 @@
         <junit.version>5.9.2</junit.version>
         <jwt.version>0.12.6</jwt.version>
         <lombok.version>1.18.32</lombok.version>
+        <sonar.organization>compairifuel</sonar.organization>
     </properties>
 
     <dependencies>
