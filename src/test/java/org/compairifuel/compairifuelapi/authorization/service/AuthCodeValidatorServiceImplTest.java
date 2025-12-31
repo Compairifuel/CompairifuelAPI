@@ -20,7 +20,7 @@ import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class AuthCodeValidatorServiceImplTest {
+class AuthCodeValidatorServiceImplTest {
     private final AuthCodeValidatorServiceImpl sut = new AuthCodeValidatorServiceImpl();
     private SecretKey key;
 
