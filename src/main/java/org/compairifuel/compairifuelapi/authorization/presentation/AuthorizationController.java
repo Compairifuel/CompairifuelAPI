@@ -36,7 +36,7 @@ public class AuthorizationController {
     @GET
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAuthorizationCode(@QueryParam("response_type") @Pattern(regexp = "(code)", message = "response_type must be set to “code”.") String response_type, @QueryParam("client_id") String client_id, @QueryParam("redirect_uri") @Pattern(regexp = "^([a-zA-Z]{2,}://[\\w_-]+(\\.[\\w_-]+)?([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?)$", message = "redirect_uri must be a valid uri") @NotBlank(message = "redirect_uri cannot be blank!") String redirect_uri, @QueryParam("code_challenge") @NotBlank(message = "code_challenge cannot be blank!") String code_challenge, @QueryParam("state") @NotBlank(message = "state cannot be blank!") String state) {
+    public Response getAuthorizationCode(@QueryParam("response_type") @Pattern(regexp = "(code)", message = "response_type must be set to “code”.") String response_type, @QueryParam("client_id") String client_id, @QueryParam("redirect_uri") @Pattern(regexp = "^([a-zA-Z]{2,}://[\\w-]+(\\.[\\w-]+)?([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?)$", message = "redirect_uri must be a valid uri") @NotBlank(message = "redirect_uri cannot be blank!") String redirect_uri, @QueryParam("code_challenge") @NotBlank(message = "code_challenge cannot be blank!") String code_challenge, @QueryParam("state") @NotBlank(message = "state cannot be blank!") String state) {
         URI redirectToURI = authorizationService.getAuthorizationCode(response_type, client_id, redirect_uri, code_challenge, state);
         return Response.seeOther(redirectToURI).header(HttpHeaders.CACHE_CONTROL, CacheControlDirectives.NO_STORE).build();
     }
@@ -55,7 +55,7 @@ public class AuthorizationController {
     @Path("/token")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAccessToken(@FormParam("grant_type") @Pattern(regexp = "authorization_code", message = "grant_type must be set to “authorization_code”.") String grant_type, @FormParam("code") @NotBlank(message = "code cannot be blank!") String code, @FormParam("redirect_uri") @Pattern(regexp = "^([a-zA-Z]{2,}://[\\w_-]+(\\.[\\w_-]+)?([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?)$", message = "redirect_uri must be a valid uri") @NotBlank(message = "redirect_uri cannot be blank!") String redirect_uri, @FormParam("client_id") String client_id, @FormParam("code_verifier") @NotBlank(message = "code_verifier cannot be blank!") String code_verifier) {
+    public Response getAccessToken(@FormParam("grant_type") @Pattern(regexp = "authorization_code", message = "grant_type must be set to “authorization_code”.") String grant_type, @FormParam("code") @NotBlank(message = "code cannot be blank!") String code, @FormParam("redirect_uri") @Pattern(regexp = "^([a-zA-Z]{2,}://[\\w-]+(\\.[\\w-]+)?([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?)$", message = "redirect_uri must be a valid uri") @NotBlank(message = "redirect_uri cannot be blank!") String redirect_uri, @FormParam("client_id") String client_id, @FormParam("code_verifier") @NotBlank(message = "code_verifier cannot be blank!") String code_verifier) {
         AccessTokenDomain accessTokenDomain = authorizationService.getAccessToken(grant_type, code, redirect_uri, client_id, code_verifier);
 
         AccessTokenResponseDTO response = buildAccessTokenResponseDTO(accessTokenDomain);
