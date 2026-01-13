@@ -41,9 +41,9 @@ public class DataCSVFuelPriceServiceAdapteeImpl implements IFuelPriceServiceAggr
         try {
             @Cleanup BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResources("data.csv").nextElement().openStream()));
 
-            List<List<String>> row = br.lines().map(line -> Arrays.asList(line.split(";"))).collect(Collectors.toList());
+            List<List<String>> row = br.lines().map(line -> Arrays.asList(line.split(";"))).toList();
 
-            List<FuelPriceResponseDTO> list = row.subList(1, row.size() - 1).stream().filter(column -> column.get(4).equals(fuelType) && column.get(0).equals(address)).map(fuelPriceMapper::mapFuelPriceCSVRowToFuelPriceResponseDTO).collect(Collectors.toList());
+            List<FuelPriceResponseDTO> list = row.subList(1, row.size() - 1).stream().filter(column -> column.get(4).equals(fuelType) && column.get(0).equals(address)).map(fuelPriceMapper::mapFuelPriceCSVRowToFuelPriceResponseDTO).toList();
 
             if (list.isEmpty()) {
                 log.info("No fuel prices found for address: " + address);
@@ -62,13 +62,13 @@ public class DataCSVFuelPriceServiceAdapteeImpl implements IFuelPriceServiceAggr
         try {
             @Cleanup BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResources("data.csv").nextElement().openStream()));
 
-            List<List<String>> row = br.lines().map(line -> Arrays.asList(line.split(";"))).collect(Collectors.toList());
+            List<List<String>> row = br.lines().map(line -> Arrays.asList(line.split(";"))).toList();
 
             // this is to add a 5m leeway to the latitude and longitude.
             double circa = 0.00005;
 
             List<FuelPriceResponseDTO> list = row.subList(1, row.size() - 1).stream().filter(column -> (column.get(4).equals(fuelType) && (Double.parseDouble(column.get(2)) <= (latitude + circa) && Double.parseDouble(column.get(2)) >= (latitude - circa)) && (Double.parseDouble(column.get(3)) <= longitude + circa && Double.parseDouble(column.get(3)) >= longitude - circa))
-            ).map(fuelPriceMapper::mapFuelPriceCSVRowToFuelPriceResponseDTO).collect(Collectors.toList());
+            ).map(fuelPriceMapper::mapFuelPriceCSVRowToFuelPriceResponseDTO).toList();
 
             if (list.isEmpty()) {
                 log.info("No fuel prices found for latitude and longitude: " + latitude + ", " + longitude);
@@ -87,7 +87,7 @@ public class DataCSVFuelPriceServiceAdapteeImpl implements IFuelPriceServiceAggr
         try {
             @Cleanup BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResources("data.csv").nextElement().openStream()));
 
-            List<List<String>> row = br.lines().map(line -> Arrays.asList(line.split(";"))).collect(Collectors.toList());
+            List<List<String>> row = br.lines().map(line -> Arrays.asList(line.split(";"))).toList();
 
             // this is to add a 5m leeway to the latitude and longitude.
             double circa = 0.00005;
