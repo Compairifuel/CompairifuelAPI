@@ -10,6 +10,9 @@ import jakarta.ws.rs.core.Response;
 import lombok.Cleanup;
 import lombok.extern.java.Log;
 
+import java.util.List;
+import java.util.Map;
+
 @Log(topic = "ServiceHttpClientImpl")
 @Default
 public class ServiceHttpClientImpl implements IServiceHttpClient {
@@ -32,8 +35,8 @@ public class ServiceHttpClientImpl implements IServiceHttpClient {
         headers.add("Content-Type", "application/json");
         headers.add("Accept", "*/*");
 
-        for (String key : queryParams.keySet()) {
-            target = target.queryParam(key, queryParams.get(key).toArray());
+        for (Map.Entry<String, List<Object>> entry : queryParams.entrySet()) {
+            target = target.queryParam(entry.getKey(), entry.getValue().toArray());
         }
 
         @Cleanup Response response = target.request(MediaType.APPLICATION_JSON).headers(headers).get(Response.class);
