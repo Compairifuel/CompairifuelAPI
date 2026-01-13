@@ -23,7 +23,7 @@ import java.util.HashMap;
 @Default
 public class AuthCodeValidatorServiceImpl implements IAuthCodeValidatorService {
     private IEnvConfig envConfig;
-    private final String TOKEN_TYPE = "Bearer";
+    private static final String TOKEN_TYPE = "Bearer";
     @Getter
     private final long expiresIn = 3600000;
 
