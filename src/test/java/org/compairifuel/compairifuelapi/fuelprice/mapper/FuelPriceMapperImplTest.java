@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FuelPriceMapperImplTest {
+class FuelPriceMapperImplTest {
     private final FuelPriceMapperImpl sut = new FuelPriceMapperImpl();
     private final FuelPriceResponseDTO fuelPriceResponseDTO = new FuelPriceResponseDTO();
     private final List<String> fuelPriceCSVRowThrowsInternalServerErrorException = List.of();
