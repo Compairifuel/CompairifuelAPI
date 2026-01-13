@@ -11,7 +11,6 @@ import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.InternalServerErrorException;
-import lombok.Getter;
 import lombok.extern.java.Log;
 import org.compairifuel.compairifuelapi.utils.IEnvConfig;
 
@@ -24,8 +23,11 @@ import java.util.HashMap;
 public class AuthCodeValidatorServiceImpl implements IAuthCodeValidatorService {
     private IEnvConfig envConfig;
     private static final String TOKEN_TYPE = "Bearer";
-    @Getter
-    private final long expiresIn = 3600000;
+    private static final long EXPIRES_IN = 3600000;
+
+    public long getExpiresIn() {
+        return EXPIRES_IN;
+    }
 
     @Inject
     public void setEnvConfig(IEnvConfig envConfig) {
