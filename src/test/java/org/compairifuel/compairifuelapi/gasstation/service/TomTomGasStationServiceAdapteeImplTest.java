@@ -16,10 +16,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class TomTomGasStationServiceAdapteeImplTest {
+    private static final String API_KEY = "apiKey";
     private final TomTomGasStationServiceAdapteeImpl sut = new TomTomGasStationServiceAdapteeImpl();
     private IServiceHttpClient serviceHttpClient;
     private IEnvConfig envConfig;
-    private final String API_KEY = "apiKey";
     private IGasStationMapper gasStationMapper;
 
     @BeforeEach
