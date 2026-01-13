@@ -4,6 +4,7 @@ import jakarta.inject.Inject;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -36,7 +37,7 @@ public class AuthorizationController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAuthorizationCode(@QueryParam("response_type") @Pattern(regexp = "(code)", message = "response_type must be set to “code”.") String response_type, @QueryParam("client_id") String client_id, @QueryParam("redirect_uri") @Pattern(regexp = "^([a-zA-Z]{2,}://[\\w_-]+(\\.[\\w_-]+)?([\\w.,@?^=%&:/~+#-]*[\\w@?^=%&/~+#-])?)$", message = "redirect_uri must be a valid uri") @NotBlank(message = "redirect_uri cannot be blank!") String redirect_uri, @QueryParam("code_challenge") @NotBlank(message = "code_challenge cannot be blank!") String code_challenge, @QueryParam("state") @NotBlank(message = "state cannot be blank!") String state) {
         URI redirectToURI = authorizationService.getAuthorizationCode(response_type, client_id, redirect_uri, code_challenge, state);
-        return Response.seeOther(redirectToURI).header("Cache-Control", "no-store").build();
+        return Response.seeOther(redirectToURI).header(HttpHeaders.CACHE_CONTROL, "no-store").build();
     }
 
     /**
@@ -58,7 +59,7 @@ public class AuthorizationController {
 
         AccessTokenResponseDTO response = buildAccessTokenResponseDTO(accessTokenDomain);
 
-        return Response.ok().entity(response).header("Cache-Control", "no-store").build();
+        return Response.ok().entity(response).header(HttpHeaders.CACHE_CONTROL, "no-store").build();
     }
 
     /**
@@ -76,7 +77,7 @@ public class AuthorizationController {
 
         AccessTokenResponseDTO response = buildAccessTokenResponseDTO(accessTokenDomain);
 
-        return Response.ok().entity(response).header("Cache-Control", "no-store").build();
+        return Response.ok().entity(response).header(HttpHeaders.CACHE_CONTROL, "no-store").build();
     }
 
     @GET
