@@ -42,7 +42,7 @@ public class ServiceHttpClientImpl implements IServiceHttpClient {
         @Cleanup Response response = target.request(MediaType.APPLICATION_JSON).headers(headers).get(Response.class);
         if(response.getStatus() != 200) {
             log.severe("Failed to get gas stations from TomTom API. Status code: " + response.getStatus());
-            throw new RuntimeException("Failed to get gas stations from TomTom API. Status code: " + response.getStatus());
+            throw new ResponseNotOKException("Failed to get gas stations from TomTom API. Status code: " + response.getStatus());
         }
 
         /*
