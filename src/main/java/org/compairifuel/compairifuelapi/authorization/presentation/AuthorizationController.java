@@ -89,10 +89,10 @@ public class AuthorizationController {
 
     private AccessTokenResponseDTO buildAccessTokenResponseDTO(AccessTokenDomain accessTokenDomain) {
         AccessTokenResponseDTO response = new AccessTokenResponseDTO();
-        response.setAccess_token(accessTokenDomain.getAccessToken());
-        response.setExpires_in(accessTokenDomain.getExpiresIn());
-        response.setToken_type(accessTokenDomain.getTokenType());
-        response.setRefresh_token(accessTokenDomain.getRefreshToken());
+        response.setAccessToken(accessTokenDomain.getAccessToken());
+        response.setExpiresIn(accessTokenDomain.getExpiresIn());
+        response.setTokenType(accessTokenDomain.getTokenType());
+        response.setRefreshToken(accessTokenDomain.getRefreshToken());
         return response;
     }
 }
