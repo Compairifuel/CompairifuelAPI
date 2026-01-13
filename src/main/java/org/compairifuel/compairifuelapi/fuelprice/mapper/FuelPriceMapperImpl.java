@@ -4,7 +4,6 @@ import jakarta.enterprise.inject.Default;
 import jakarta.ws.rs.InternalServerErrorException;
 import lombok.extern.java.Log;
 import org.compairifuel.compairifuelapi.fuelprice.presentation.FuelPriceResponseDTO;
-import org.compairifuel.compairifuelapi.fuelprice.service.FuelPriceDomain;
 import org.compairifuel.compairifuelapi.utils.presentation.PositionDTO;
 
 import java.util.List;

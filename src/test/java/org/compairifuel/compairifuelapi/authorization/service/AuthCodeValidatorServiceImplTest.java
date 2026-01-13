@@ -18,7 +18,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class AuthCodeValidatorServiceImplTest {
     private final AuthCodeValidatorServiceImpl sut = new AuthCodeValidatorServiceImpl();

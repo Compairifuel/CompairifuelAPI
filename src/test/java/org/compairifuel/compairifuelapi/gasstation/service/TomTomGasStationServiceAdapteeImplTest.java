@@ -1,11 +1,9 @@
 package org.compairifuel.compairifuelapi.gasstation.service;
 
-import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
-import org.compairifuel.compairifuelapi.fuelprice.mapper.IFuelPriceMapper;
 import org.compairifuel.compairifuelapi.gasstation.mapper.IGasStationMapper;
 import org.compairifuel.compairifuelapi.gasstation.presentation.GasStationResponseDTO;
-import org.compairifuel.compairifuelapi.gasstation.service.domain.*;
+import org.compairifuel.compairifuelapi.gasstation.service.domain.GasStationDomain;
 import org.compairifuel.compairifuelapi.utils.IEnvConfig;
 import org.compairifuel.compairifuelapi.utils.service.IServiceHttpClient;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
