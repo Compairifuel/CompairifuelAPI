@@ -9,6 +9,6 @@ public interface IAuthCodeValidatorService {
     String getTokenType();
     long getExpiresIn();
     boolean isValid(String accessToken);
-    Claims retrieveJwtsClaims(String JwtToken);
+    Claims retrieveJwtsClaims(String jwtToken);
     String createJwtsToken(HashMap<String, Object> claims, Date expiration, Date issuedAt);
 }

@@ -32,10 +32,10 @@ public class AuthorizationServiceImpl implements IAuthorizationService {
 
         boolean isWhitelisted;
         try {
-            @Cleanup BufferedReader br_uri = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("whitelisted_uri.yml"))));
-            @Cleanup BufferedReader br_client = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("whitelisted_client.yml"))));
-            isWhitelisted = br_uri.lines().anyMatch(el -> Objects.equals(UriBuilder.fromUri(el).replaceQuery("").build().toString(), redirectToURI.clone().replaceQuery("").build().toString())) &&
-                    br_client.lines().anyMatch(el -> Objects.equals(el, clientId));
+            @Cleanup BufferedReader brUri = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("whitelisted_uri.yml"))));
+            @Cleanup BufferedReader brClient = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("whitelisted_client.yml"))));
+            isWhitelisted = brUri.lines().anyMatch(el -> Objects.equals(UriBuilder.fromUri(el).replaceQuery("").build().toString(), redirectToURI.clone().replaceQuery("").build().toString())) &&
+                    brClient.lines().anyMatch(el -> Objects.equals(el, clientId));
         } catch (Exception e) {
             throw new InternalServerErrorException(e.getMessage());
         }
