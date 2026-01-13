@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class GasStationMapperImplTest {
+class GasStationMapperImplTest {
     private final GasStationMapperImpl sut = new GasStationMapperImpl();
     private final ResultDomain resultDomainReturnsCorrectly = new ResultDomain();
     private final ResultDomain resultDomainThrowsInternalServerErrorException = new ResultDomain();

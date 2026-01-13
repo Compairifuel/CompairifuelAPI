@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class AuthCodeValidatorControllerTest {
+class AuthCodeValidatorControllerTest {
     private final AuthCodeValidatorController sut = new AuthCodeValidatorController();
     private IAuthCodeValidatorService authCodeValidatorService;
 

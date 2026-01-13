@@ -12,23 +12,23 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Tag("integration-test")
-public class IServiceHttpClientIT {
+class IServiceHttpClientIT {
     private static IEnvConfig envConfig;
     private IServiceHttpClient serviceHttpClient;
 
     @BeforeAll
-    public static void setupAll() {
+    static void setupAll() {
         envConfig = new EnvConfigImpl();
         ((EnvConfigImpl) envConfig).init();
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         serviceHttpClient = new ServiceHttpClientImpl();
     }
 
     @Test
-    public void testSendRequestToTomTomAPI() {
+    void testSendRequestToTomTomAPI() {
         // Arrange
         String apiKey = envConfig.getEnv("API_KEY");
 
