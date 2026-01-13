@@ -1,7 +1,6 @@
 package org.compairifuel.compairifuelapi.fuelprice.service;
 
 import jakarta.ws.rs.NotFoundException;
-import org.compairifuel.compairifuelapi.fuelprice.mapper.IFuelPriceMapper;
 import org.compairifuel.compairifuelapi.fuelprice.presentation.FuelPriceResponseDTO;
 import org.compairifuel.compairifuelapi.utils.presentation.PositionDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,9 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class FuelPriceServiceImplTest {
     private final FuelPriceServiceImpl sut = new FuelPriceServiceImpl();

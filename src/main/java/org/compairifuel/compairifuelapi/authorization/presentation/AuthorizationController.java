@@ -7,13 +7,12 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.net.URI;
-
 import lombok.extern.java.Log;
 import org.compairifuel.compairifuelapi.authorization.service.IAuthorizationService;
 import org.compairifuel.compairifuelapi.authorization.service.domain.AccessTokenDomain;
 import org.compairifuel.compairifuelapi.utils.presentation.CacheControlDirectives;
+
+import java.net.URI;
 
 @Log(topic = "AuthorizationController")
 @Path("/oauth")

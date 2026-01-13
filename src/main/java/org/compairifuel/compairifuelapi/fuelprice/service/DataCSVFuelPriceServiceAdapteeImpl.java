@@ -2,27 +2,18 @@ package org.compairifuel.compairifuelapi.fuelprice.service;
 
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.core.MultivaluedHashMap;
 import lombok.Cleanup;
 import lombok.extern.java.Log;
 import org.compairifuel.compairifuelapi.fuelprice.mapper.IFuelPriceMapper;
 import org.compairifuel.compairifuelapi.fuelprice.presentation.FuelPriceResponseDTO;
-import org.compairifuel.compairifuelapi.gasstation.presentation.GasStationResponseDTO;
-import org.compairifuel.compairifuelapi.gasstation.service.IGasStationsServiceAggregatorAdapter;
-import org.compairifuel.compairifuelapi.gasstation.service.domain.GasStationDomain;
-import org.compairifuel.compairifuelapi.gasstation.service.domain.ResultDomain;
-import org.compairifuel.compairifuelapi.utils.presentation.PositionDTO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Log(topic = "DataCSVFuelPriceServiceAdapteeImpl")

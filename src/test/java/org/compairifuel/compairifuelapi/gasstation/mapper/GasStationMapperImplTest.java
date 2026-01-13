@@ -2,7 +2,6 @@ package org.compairifuel.compairifuelapi.gasstation.mapper;
 
 import jakarta.ws.rs.InternalServerErrorException;
 import org.compairifuel.compairifuelapi.gasstation.presentation.GasStationResponseDTO;
-import org.compairifuel.compairifuelapi.gasstation.service.TomTomGasStationServiceAdapteeImpl;
 import org.compairifuel.compairifuelapi.gasstation.service.domain.*;
 import org.compairifuel.compairifuelapi.utils.presentation.PositionDTO;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class GasStationMapperImplTest {
     private final GasStationMapperImpl sut = new GasStationMapperImpl();

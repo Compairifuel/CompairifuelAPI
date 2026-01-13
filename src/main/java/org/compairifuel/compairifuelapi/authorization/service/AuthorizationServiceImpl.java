@@ -1,6 +1,6 @@
 package org.compairifuel.compairifuelapi.authorization.service;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ForbiddenException;

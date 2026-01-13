@@ -4,6 +4,7 @@ import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
 import lombok.extern.java.Log;
 import org.compairifuel.compairifuelapi.fuelprice.presentation.FuelPriceResponseDTO;
+
 import java.util.List;
 
 @Log(topic = "FuelPriceServiceImpl")
