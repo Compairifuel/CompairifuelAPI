@@ -42,14 +42,14 @@ public class AuthCodeValidatorServiceImpl implements IAuthCodeValidatorService {
         return retrieveJwtsClaims(accessToken) != null;
     }
 
-    public Claims retrieveJwtsClaims(String JwtToken) {
+    public Claims retrieveJwtsClaims(String jwtToken) {
         Claims claims;
         try {
             claims = Jwts
                     .parser()
                     .verifyWith(getSecretKey())
                     .build()
-                    .parseSignedClaims(JwtToken)
+                    .parseSignedClaims(jwtToken)
                     .getPayload();
         } catch (SignatureException ex) {
             log.warning("The token is not valid: " + ex.getMessage());
