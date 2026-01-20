@@ -4,6 +4,8 @@ import jakarta.ws.rs.NotFoundException;
 import org.compairifuel.compairifuelapi.fuelprice.mapper.IFuelPriceMapper;
 import org.compairifuel.compairifuelapi.fuelprice.presentation.FuelPriceResponseDTO;
 import org.compairifuel.compairifuelapi.utils.presentation.PositionDTO;
+import org.compairifuel.compairifuelapi.utils.service.IServiceCsvReader;
+import org.compairifuel.compairifuelapi.utils.service.ServiceCsvReaderImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -17,12 +19,15 @@ import static org.mockito.Mockito.*;
 class DataCSVFuelPriceServiceAdapteeImplIT {
     private final DataCSVFuelPriceServiceAdapteeImpl sut = new DataCSVFuelPriceServiceAdapteeImpl();
     private IFuelPriceMapper fuelPriceMapper;
+    private IServiceCsvReader serviceCsvReader;
 
     @BeforeEach
     void setUp() {
         fuelPriceMapper = mock(IFuelPriceMapper.class);
+        serviceCsvReader = new ServiceCsvReaderImpl();
 
         sut.setFuelPriceMapper(fuelPriceMapper);
+        sut.setServiceCsvReader(serviceCsvReader);
     }
 
     @Test
@@ -153,7 +158,7 @@ class DataCSVFuelPriceServiceAdapteeImplIT {
         String address = "";
         double latitude = 0;
         double longitude = 0;
-        String exceptionMessage = "No fuel prices found for adress: " + address + "with latitude and longitude: " + latitude + ", " + longitude;
+        String exceptionMessage = "No fuel prices found for adress: " + address + " with latitude and longitude: " + latitude + ", " + longitude;
 
         // Assert
         Exception ex = assertThrows(NotFoundException.class, () -> {
