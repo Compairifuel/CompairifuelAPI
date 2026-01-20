@@ -16,7 +16,7 @@ class GasStationControllerTest {
     private final GasStationController sut = new GasStationController();
     private IGasStationService gasStationService;
     private AuthCodeValidatorController authCodeValidatorController;
-    private final int HTTP_OK = 200;
+    private static final int HTTP_OK = 200;
 
     @BeforeEach
     void setUp() {
