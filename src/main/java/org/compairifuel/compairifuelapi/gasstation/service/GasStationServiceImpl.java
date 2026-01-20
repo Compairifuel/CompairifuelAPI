@@ -2,14 +2,12 @@ package org.compairifuel.compairifuelapi.gasstation.service;
 
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
-import lombok.Data;
 import lombok.extern.java.Log;
 import org.compairifuel.compairifuelapi.gasstation.presentation.GasStationResponseDTO;
 
 import java.util.List;
 
 @Log(topic = "GasStationServiceImpl")
-@Data
 @Default
 public class GasStationServiceImpl implements IGasStationService {
     private IGasStationsServiceAggregatorAdapter gasStationsServiceAggregatorAdapter;
