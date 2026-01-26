@@ -20,6 +20,7 @@
         <jwt.version>0.12.6</jwt.version>
         <lombok.version>1.18.32</lombok.version>
         <sonar.organization>compairifuel</sonar.organization>
+        <jersey-test-framework.version>4.0.1</jersey-test-framework.version>
     </properties>
 
     <profiles>
@@ -165,6 +166,23 @@
             <artifactId>commons-codec</artifactId>
             <version>1.13</version>
         </dependency>
+        <dependency>
+            <groupId>au.com.dius.pact.provider</groupId>
+            <artifactId>junit5</artifactId>
+            <version>4.6.19</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework</groupId>
+            <artifactId>jersey-test-framework-core</artifactId>
+            <version>${jersey-test-framework.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.test-framework.providers</groupId>
+            <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
+            <version>${jersey-test-framework.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -217,6 +235,8 @@
                         <excludedGroups>
                             integration-test
                         </excludedGroups>
+                        <!-- Required by Pact -->
+                        <useSystemClassLoader>false</useSystemClassLoader>
                     </configuration>
                 </plugin>
                 <plugin>
