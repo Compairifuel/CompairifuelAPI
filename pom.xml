@@ -212,6 +212,11 @@
             <artifactId>commons-validator</artifactId>
             <version>1.10.1</version>
         </dependency>
+        <dependency>
+            <groupId>au.com.dius.pact.provider</groupId>
+            <artifactId>junit5</artifactId>
+            <version>4.6.19</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -264,6 +269,8 @@
                         <excludedGroups>
                             integration-test
                         </excludedGroups>
+                        <!-- Required by Pact -->
+                        <useSystemClassLoader>false</useSystemClassLoader>
                     </configuration>
                 </plugin>
                 <plugin>
