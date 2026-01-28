@@ -10,6 +10,7 @@ import lombok.Cleanup;
 import lombok.extern.java.Log;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.compairifuel.compairifuelapi.authorization.service.domain.AccessTokenDomain;
+import org.compairifuel.compairifuelapi.authorization.dataaccess.IAuthClientRepository;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -21,6 +22,13 @@ import java.util.*;
 public class AuthorizationServiceImpl implements IAuthorizationService {
     private AuthCodeValidatorServiceImpl authCodeValidatorService;
 
+    private IAuthClientRepository clientAuthRepository;
+
+    @Inject
+    public void setClientAuthRepository(IAuthClientRepository clientAuthRepository) {
+        this.clientAuthRepository = clientAuthRepository;
+    }
+
     @Inject
     public void setAuthCodeValidatorService(AuthCodeValidatorServiceImpl authCodeValidatorService) {
         this.authCodeValidatorService = authCodeValidatorService;
@@ -30,15 +38,7 @@ public class AuthorizationServiceImpl implements IAuthorizationService {
     public URI getAuthorizationCode(String grantType, String clientId, String redirectUri, String codeChallenge, String state) {
         UriBuilder redirectToURI = UriBuilder.fromUri(redirectUri);
 
-        boolean isWhitelisted;
-        try {
-            @Cleanup BufferedReader brUri = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("whitelisted_uri.yml"))));
-            @Cleanup BufferedReader brClient = new BufferedReader(new InputStreamReader(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream("whitelisted_client.yml"))));
-            isWhitelisted = brUri.lines().anyMatch(el -> Objects.equals(UriBuilder.fromUri(el).replaceQuery("").build().toString(), redirectToURI.clone().replaceQuery("").build().toString())) &&
-                    brClient.lines().anyMatch(el -> Objects.equals(el, clientId));
-        } catch (Exception e) {
-            throw new InternalServerErrorException(e.getMessage());
-        }
+        boolean isWhitelisted = clientAuthRepository.isRedirectUriAllowed(clientId,redirectUri);
 
         if (!isWhitelisted) {
             log.warning("The consumer isn't whitelisted!");
@@ -65,10 +65,7 @@ public class AuthorizationServiceImpl implements IAuthorizationService {
     public AccessTokenDomain getAccessToken(String grantType, String authorizationCode, String redirectUri, String clientId, String codeVerifier) {
         Claims claims = authCodeValidatorService.retrieveJwtsClaims(authorizationCode);
 
-        if (!Arrays.equals(Base64.getUrlDecoder().decode(claims.get("code_challenge", String.class)), DigestUtils.sha256(codeVerifier)) ||
-                !redirectUri.equals(claims.get("redirect_uri", String.class)) ||
-                !clientId.equals(claims.get("client_id", String.class))
-        ) {
+        if (isAuthorized(claims, redirectUri, clientId, codeVerifier)) {
             log.warning("The consumer is not authorized!");
             throw new ForbiddenException();
         }
@@ -80,9 +77,7 @@ public class AuthorizationServiceImpl implements IAuthorizationService {
     public AccessTokenDomain getAccessTokenByRefreshToken(String grantType, String refreshToken, String clientId, String codeVerifier) {
         Claims claims = authCodeValidatorService.retrieveJwtsClaims(refreshToken);
 
-        if (!Arrays.equals(Base64.getUrlDecoder().decode(claims.get("code_challenge", String.class)), DigestUtils.sha256(codeVerifier)) ||
-                !clientId.equals(claims.get("client_id", String.class))
-        ) {
+        if (isAuthorized(claims, clientId, codeVerifier)) {
             log.warning("The consumer is not authorized!");
             throw new ForbiddenException();
         }
@@ -104,5 +99,14 @@ public class AuthorizationServiceImpl implements IAuthorizationService {
         accessTokenDomain.setTokenType(authCodeValidatorService.getTokenType());
         accessTokenDomain.setRefreshToken(refreshToken);
         return accessTokenDomain;
+    }
+
+    private boolean isAuthorized(Claims claims, String redirectUri, String clientId, String codeVerifier) {
+        return !redirectUri.equals(claims.get("redirect_uri", String.class)) || isAuthorized(claims, clientId, codeVerifier);
+    }
+
+    private boolean isAuthorized(Claims claims, String clientId, String codeVerifier) {
+        return !Arrays.equals(Base64.getUrlDecoder().decode(claims.get("code_challenge", String.class)), DigestUtils.sha256(codeVerifier)) ||
+            !clientId.equals(claims.get("client_id", String.class));
     }
 }
