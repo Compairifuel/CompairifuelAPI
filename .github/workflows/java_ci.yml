@@ -4,7 +4,13 @@ on:
   push:
     branches:
       - main
-      - development
+    paths:
+      - '**/*.java'
+      - '**/pom.xml'
+      - '**/mvnw*'
+      - '!.github/**'
+      - '.github/workflows/java_ci.yml'
+      - '!**/*.md'
   pull_request:
   workflow_dispatch:
 
