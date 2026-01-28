@@ -1,0 +1,26 @@
+name: Semver Versioning CI
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  computing_version:
+    name: Compute Semver Version
+    uses: compairifuel/.github/.github/workflows/reusable-nextsemver.yml@main
+    with:
+      trunk-ref: "main"
+    permissions:
+      contents: read
+  add_release:
+    name: Add Version Tag & Release
+    needs: computing_version
+    uses: compairifuel/.github/.github/workflows/reusable-createrelease.yml@main
+    with:
+      tag-name: ${{ needs.computing_version.outputs.semver-tag }}
+    permissions:
+      contents: write
+    secrets: 
+      github-token: ${{ secrets.GITHUB_TOKEN }}
