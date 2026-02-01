@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -17,6 +20,7 @@ jobs:
   add_release:
     name: Add Version Tag & Release
     needs: computing_version
+    if: github.ref == 'refs/heads/main'
     uses: compairifuel/.github/.github/workflows/reusable-createrelease.yml@main
     with:
       tag-name: ${{ needs.computing_version.outputs.semver-tag }}
