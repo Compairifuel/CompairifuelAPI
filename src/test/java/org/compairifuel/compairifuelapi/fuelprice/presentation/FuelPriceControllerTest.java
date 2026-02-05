@@ -26,7 +26,7 @@ class FuelPriceControllerTest {
         sut.setFuelPriceService(fuelPriceService);
         sut.setAuthCodeValidatorController(authCodeValidatorController);
 
-        when(authCodeValidatorController.authenticateToken(anyString())).thenReturn(true);
+        when(authCodeValidatorController.authenticateToken(anyString(), anyList())).thenReturn(true);
     }
 
     @Test

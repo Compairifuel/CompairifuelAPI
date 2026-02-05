@@ -15,6 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.net.URI;
+import jakarta.ws.rs.core.HttpHeaders;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,6 +29,7 @@ class AuthorizationControllerAPITest extends JerseyTest {
     @Override
     protected Application configure() {
         return new ResourceConfig(AuthorizationController.class)
+                .register(org.glassfish.jersey.server.validation.ValidationFeature.class)
                 .register(new AbstractBinder() {
                     @Override
                     protected void configure() {
@@ -42,22 +44,24 @@ class AuthorizationControllerAPITest extends JerseyTest {
     }
 
     @DisplayName("GIVEN valid parameters WHEN getAuthorizationCode is called THEN it validates parameters without errors")
-    @ParameterizedTest(name = "parameters: responseType={0}, clientId={1}, redirectUri={2}, codeChallenge={3}, state={4}, redirectToUri={5}")
+    @ParameterizedTest(name = "parameters: responseType={0}, clientId={1}, clientSecret={2}, redirectUri={3}, codeChallenge={4}, state={5}, scope={6}, redirectToUri={7}")
     @MethodSource({
             "org.compairifuel.compairifuelapi.authorization.presentation.AuthorizationControllerAPIFixtures#provideValidRedirectURIGetAuthorizationCodeParameters",
             "org.compairifuel.compairifuelapi.authorization.presentation.AuthorizationControllerAPIFixtures#provideValidClientIdGetAuthorizationCodeParameters",
             "org.compairifuel.compairifuelapi.authorization.presentation.AuthorizationControllerAPIFixtures#provideValidCodeChallengeGetAuthorizationCodeParameters"
     })
-    void testGetAuthorizationCodeValidatesParametersWithoutErrors(String responseType, String clientId, String redirectUri, String codeChallenge, String state, URI redirectToURI) {
-        when(authorizationService.getAuthorizationCode(responseType, clientId, redirectUri, codeChallenge, "{}"))
+    void testGetAuthorizationCodeValidatesParametersWithoutErrors(String responseType, String clientId, String clientSecret, String redirectUri, String codeChallenge, String state, String scope, URI redirectToURI) {
+        when(authorizationService.getAuthorizationCode(responseType, clientId, clientSecret, redirectUri, codeChallenge, "{}", scope))
                 .thenReturn(redirectToURI);
 
         Response response = target("/oauth")
                 .queryParam("response_type", responseType)
                 .queryParam("client_id", clientId)
+                .queryParam("client_secret", clientSecret)
                 .queryParam("redirect_uri", redirectUri)
                 .queryParam("code_challenge", codeChallenge)
                 .queryParam("state", state)
+                .queryParam("scope", scope)
                 .request(MediaType.APPLICATION_JSON)
                 .get();
 
@@ -69,18 +73,20 @@ class AuthorizationControllerAPITest extends JerseyTest {
     }
 
     @DisplayName("GIVEN invalid parameters WHEN getAuthorizationCode is called THEN response is 400")
-    @ParameterizedTest(name = "parameters: responseType={0}, clientId={1}, redirectUri={2}, codeChallenge={3}, state={4}")
+    @ParameterizedTest(name = "parameters: responseType={0}, clientId={1}, clientSecret={2}, redirectUri={3}, codeChallenge={4}, state={5}, scope={6}")
     @MethodSource("org.compairifuel.compairifuelapi.authorization.presentation.AuthorizationControllerAPIFixtures#provideInvalidRedirectURIGetAuthorizationCodeParameters")
-    void testGetAuthorizationCodeValidatesParametersWithErrors(String responseType, String clientId, String redirectUri, String codeChallenge, String state) {
-        when(authorizationService.getAuthorizationCode(responseType, clientId, redirectUri, codeChallenge, state))
+    void testGetAuthorizationCodeValidatesParametersWithErrors(String responseType, String clientId, String clientSecret, String redirectUri, String codeChallenge, String state, String scope) {
+        when(authorizationService.getAuthorizationCode(responseType, clientId, clientSecret, redirectUri, codeChallenge, state, scope))
                 .thenReturn(URI.create("http://localhost:8080?state=%7B&7D&code=123"));
 
         Response response = target("/oauth")
                 .queryParam("response_type", responseType)
                 .queryParam("client_id", clientId)
+                .queryParam("client_secret", clientSecret)
                 .queryParam("redirect_uri", redirectUri)
                 .queryParam("code_challenge", codeChallenge)
                 .queryParam("state", state)
+                .queryParam("scope", scope)
                 .request(MediaType.APPLICATION_JSON)
                 .get();
 
@@ -88,10 +94,10 @@ class AuthorizationControllerAPITest extends JerseyTest {
     }
 
     @DisplayName("GIVEN valid parameters WHEN getAccessToken is called THEN it validates parameters without errors")
-    @ParameterizedTest(name = "parameters: grantType={0}, code={1}, redirectUri={2}, clientId={3}, codeVerifier={4}")
+    @ParameterizedTest(name = "parameters: grantType={0}, code={1}, redirectUri={2}, clientId={3}, clientSecret={4}, codeVerifier={5}")
     @MethodSource("org.compairifuel.compairifuelapi.authorization.presentation.AuthorizationControllerAPIFixtures#provideValidRedirectURIGetAccessTokenParameters")
-    void testGetAccessTokenValidatesParametersWithoutErrors(String grantType, String code, String redirectUri, String clientId, String codeVerifier) {
-        when(authorizationService.getAccessToken(grantType, code, redirectUri, clientId, codeVerifier))
+    void testGetAccessTokenValidatesParametersWithoutErrors(String grantType, String code, String redirectUri, String clientId, String clientSecret, String codeVerifier) {
+        when(authorizationService.getAccessToken(grantType, code, redirectUri, clientId, clientSecret, codeVerifier))
                 .thenReturn(new AccessTokenDomain());
 
         try (
@@ -103,6 +109,7 @@ class AuthorizationControllerAPITest extends JerseyTest {
                                 .param("code", code)
                                 .param("redirect_uri", redirectUri)
                                 .param("client_id", clientId)
+                                .param("client_secret", clientSecret)
                                 .param("code_verifier", codeVerifier)
                 ))
         ) {
@@ -114,10 +121,10 @@ class AuthorizationControllerAPITest extends JerseyTest {
     }
 
     @DisplayName("GIVEN invalid parameters WHEN getAccessToken is called THEN response is 400")
-    @ParameterizedTest(name = "parameters: grantType={0}, code={1}, redirectUri={2}, clientId={3}, codeVerifier={4}")
+    @ParameterizedTest(name = "parameters: grantType={0}, code={1}, redirectUri={2}, clientId={3}, clientSecret={4}, codeVerifier={5}")
     @MethodSource("org.compairifuel.compairifuelapi.authorization.presentation.AuthorizationControllerAPIFixtures#provideInvalidRedirectURIGetAccessTokenParameters")
-    void testGetAccessTokenValidatesParametersWithErrors(String grantType, String code, String redirectUri, String clientId, String codeVerifier) {
-        when(authorizationService.getAccessToken(grantType, code, redirectUri, clientId, codeVerifier))
+    void testGetAccessTokenValidatesParametersWithErrors(String grantType, String code, String redirectUri, String clientId, String clientSecret, String codeVerifier) {
+        when(authorizationService.getAccessToken(grantType, code, redirectUri, clientId, clientSecret, codeVerifier))
                 .thenReturn(new AccessTokenDomain());
 
         try (
@@ -129,8 +136,9 @@ class AuthorizationControllerAPITest extends JerseyTest {
                                     .param("code", code)
                                     .param("redirect_uri", redirectUri)
                                     .param("client_id", clientId)
-                                    .param("code_verifier", codeVerifier
-                    )))
+                                    .param("client_secret", clientSecret)
+                                    .param("code_verifier", codeVerifier)
+                    ))
         ) {
             assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
         }
