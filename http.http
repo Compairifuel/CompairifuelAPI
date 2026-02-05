@@ -5,6 +5,8 @@
 @oauth_code_verifier = 123242
 
 ###
+# group: OAuth
+# @name Authorization Code
 GET {{httpHost}}/oauth/?
     response_type=code&
     redirect_uri={{oauth_redirect_uri}}&
@@ -15,6 +17,8 @@ GET {{httpHost}}/oauth/?
 > {% client.global.set("oauth_code", response.body.code); %}
 
 ###
+# group: OAuth
+# @name Token
 POST {{httpHost}}/oauth/token
 Content-Type: application/x-www-form-urlencoded
 
@@ -29,6 +33,8 @@ client.global.set("oauth_refresh_token", response.body.refresh_token);
 client.global.set("token_type", response.body.token_type); %}
 
 ###
+# group: OAuth
+# @name Refresh
 GET {{httpHost}}/oauth/refresh?
     grant_type=refresh_token&
     refresh_token={{oauth_refresh_token}}&
@@ -41,4 +47,42 @@ client.global.set("token_type", response.body.token_type); %}
 
 ###
 GET {{httpHost}}/
+Authorization: {{token_type}} {{access_token}}
+
+###
+# @name Health
+GET {{httpHost}}/health
+
+###
+# @name FuelPrices from Type by Address
+< {%
+    request.variables.set("fuelType", "Diesel")
+    request.variables.set("address", "Rijksstraatweg 121C, 3921 AD Elst")
+%}
+
+GET localhost:8080/prices/{{fuelType}}/{{address}}
+Content-Type: application/json
+Authorization: {{token_type}} {{access_token}}
+
+###
+# @name FuelPrices from Type by Lat & Lon
+< {%
+    request.variables.set("fuelType", "E95")
+    request.variables.set("latitude", "151.9699143")
+    request.variables.set("longitude", "5.5364367")
+%}
+
+GET localhost:8080/prices/{{fuelType}}/{{latitude}}/{{longitude}}
+Content-Type: application/json
+Authorization: {{token_type}} {{access_token}}
+
+###
+# @name GasStations By LatLon
+< {%
+    request.variables.set("lat", "51.9875311")
+    request.variables.set("lng", "5.4918973")
+%}
+
+GET localhost:8080/gasStations/{{lat}}/{{lng}}
+Content-Type: application/json
 Authorization: {{token_type}} {{access_token}}
