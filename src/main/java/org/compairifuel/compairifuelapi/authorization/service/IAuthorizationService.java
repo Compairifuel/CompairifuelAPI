@@ -5,7 +5,7 @@ import org.compairifuel.compairifuelapi.authorization.service.domain.AccessToken
 import java.net.URI;
 
 public interface IAuthorizationService {
-    URI getAuthorizationCode(String grantType, String clientId, String redirectUri, String codeChallenge, String state);
-    AccessTokenDomain getAccessToken(String grantType, String authorizationCode, String redirectUri, String clientId, String codeVerifier);
-    AccessTokenDomain getAccessTokenByRefreshToken(String grantType, String refreshToken, String clientId, String codeVerifier);
+    URI getAuthorizationCode(String grantType, String clientId, String clientSecret, String redirectUri, String codeChallenge, String state, String scope);
+    AccessTokenDomain getAccessToken(String grantType, String authorizationCode, String redirectUri, String clientId, String clientSecret, String codeVerifier);
+    AccessTokenDomain getAccessTokenByRefreshToken(String grantType, String refreshToken, String clientId, String clientSecret, String codeVerifier);
 }
