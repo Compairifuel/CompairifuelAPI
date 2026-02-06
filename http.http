@@ -60,7 +60,7 @@ GET {{httpHost}}/health
     request.variables.set("address", "Rijksstraatweg 121C, 3921 AD Elst")
 %}
 
-GET localhost:8080/prices/{{fuelType}}/{{address}}
+GET {{httpHost}}/prices/{{fuelType}}/{{address}}
 Content-Type: application/json
 Authorization: {{token_type}} {{access_token}}
 
@@ -72,7 +72,7 @@ Authorization: {{token_type}} {{access_token}}
     request.variables.set("longitude", "5.5364367")
 %}
 
-GET localhost:8080/prices/{{fuelType}}/{{latitude}}/{{longitude}}
+GET {{httpHost}}/prices/{{fuelType}}/{{latitude}}/{{longitude}}
 Content-Type: application/json
 Authorization: {{token_type}} {{access_token}}
 
@@ -83,6 +83,6 @@ Authorization: {{token_type}} {{access_token}}
     request.variables.set("lng", "5.4918973")
 %}
 
-GET localhost:8080/gasStations/{{lat}}/{{lng}}
+GET {{httpHost}}/gasStations/{{lat}}/{{lng}}
 Content-Type: application/json
 Authorization: {{token_type}} {{access_token}}
