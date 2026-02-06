@@ -1,0 +1,31 @@
+{
+  "consumer": {
+    "name": "CompairifuelApp"
+  },
+  "interactions": [
+    {
+      "description": "get fuel price for diesel with address '10 Downing St, London'",
+      "providerStates": [
+        {
+          "name": "fuel price for diesel exists for address '10 Downing St, London'"
+        }
+      ],
+      "request": {
+        "headers": {
+          "Authorization": "Bearer "
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "pact-jvm": {
+      "version": "4.6.19"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "FuelPriceController"
+  }
+}
