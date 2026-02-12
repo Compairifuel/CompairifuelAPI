@@ -15,4 +15,7 @@ public final class AuthClient {
 
     @JsonProperty("enabled")
     public boolean enabled = true;
+
+    @JsonProperty("roles")
+    public List<String> roles = List.of();
 }

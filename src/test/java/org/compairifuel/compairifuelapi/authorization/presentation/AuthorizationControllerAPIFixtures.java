@@ -15,9 +15,11 @@ class AuthorizationControllerAPIFixtures {
                 .map(uri -> Arguments.of(
                         "code",
                         "6779ef20e75817b79602",
+                        "e526b1b1b138484d747f63d55658ce41c4c084341afe4556a790243045eb96292f13de9e5407ac21b7e87a565c7d71dac5ef102fa1c004843f5ccaf4f3dffef26b38d7a1184d187e1fd20275784484850b861eea74342459726854c163e01010e091c1964aa89d01395948dd18aaf44e5944f4771d05e696161e42e8551a49e5cd863e880c17eace5f8847a069ce71aefe947678f749457961037e6d70804747f31517618fb791b5518a69a9d20b35c7561b3653e5cbb870a4588f380cf53b6285647d5c46a2bb27cc4a1a34332223cc6f8dbd728a360e853665ba5df9112e68f95074065121292cb4d5c95a9630e4ff6142a7f335c88cbe9b2b089f7c4e470e",
                         uri.toString(),
                         "pjGXfmpx1LUHqbxEB2KhEp5QXEA0XA5imOTeefSmmzI",
                         "%7B%7D",
+                        "",
                         UriBuilder.fromUri(uri)
                             .queryParam("state", "%7B%7D")
                             .queryParam("code", "123")
@@ -39,9 +41,11 @@ class AuthorizationControllerAPIFixtures {
                 .map(clientId -> Arguments.of(
                         "code",
                         clientId,
+                        "e526b1b1b138484d747f63d55658ce41c4c084341afe4556a790243045eb96292f13de9e5407ac21b7e87a565c7d71dac5ef102fa1c004843f5ccaf4f3dffef26b38d7a1184d187e1fd20275784484850b861eea74342459726854c163e01010e091c1964aa89d01395948dd18aaf44e5944f4771d05e696161e42e8551a49e5cd863e880c17eace5f8847a069ce71aefe947678f749457961037e6d70804747f31517618fb791b5518a69a9d20b35c7561b3653e5cbb870a4588f380cf53b6285647d5c46a2bb27cc4a1a34332223cc6f8dbd728a360e853665ba5df9112e68f95074065121292cb4d5c95a9630e4ff6142a7f335c88cbe9b2b089f7c4e470e",
                         "http://localhost:8080",
                         "pjGXfmpx1LUHqbxEB2KhEp5QXEA0XA5imOTeefSmmzI",
                         "%7B%7D",
+                        "admin customer",
                         "http://localhost:8080?state=%7B%7D&code=123"
                 ));
     }
@@ -56,9 +60,11 @@ class AuthorizationControllerAPIFixtures {
                 .map(codeChallenge -> Arguments.of(
                         "code",
                         "6779ef20e75817b79602",
+                        "e526b1b1b138484d747f63d55658ce41c4c084341afe4556a790243045eb96292f13de9e5407ac21b7e87a565c7d71dac5ef102fa1c004843f5ccaf4f3dffef26b38d7a1184d187e1fd20275784484850b861eea74342459726854c163e01010e091c1964aa89d01395948dd18aaf44e5944f4771d05e696161e42e8551a49e5cd863e880c17eace5f8847a069ce71aefe947678f749457961037e6d70804747f31517618fb791b5518a69a9d20b35c7561b3653e5cbb870a4588f380cf53b6285647d5c46a2bb27cc4a1a34332223cc6f8dbd728a360e853665ba5df9112e68f95074065121292cb4d5c95a9630e4ff6142a7f335c88cbe9b2b089f7c4e470e",
                         "http://localhost:8080",
                         codeChallenge,
                         "%7B%7D",
+                        "user:read",
                         "http://localhost:8080?state=%7B%7D&code=123"
                 ));
     }
@@ -68,9 +74,11 @@ class AuthorizationControllerAPIFixtures {
                 .map(uri -> Arguments.of(
                         "code",
                         "6779ef20e75817b79602",
+                        "e526b1b1b138484d747f63d55658ce41c4c084341afe4556a790243045eb96292f13de9e5407ac21b7e87a565c7d71dac5ef102fa1c004843f5ccaf4f3dffef26b38d7a1184d187e1fd20275784484850b861eea74342459726854c163e01010e091c1964aa89d01395948dd18aaf44e5944f4771d05e696161e42e8551a49e5cd863e880c17eace5f8847a069ce71aefe947678f749457961037e6d70804747f31517618fb791b5518a69a9d20b35c7561b3653e5cbb870a4588f380cf53b6285647d5c46a2bb27cc4a1a34332223cc6f8dbd728a360e853665ba5df9112e68f95074065121292cb4d5c95a9630e4ff6142a7f335c88cbe9b2b089f7c4e470e",
                         uri,
                         "pjGXfmpx1LUHqbxEB2KhEp5QXEA0XA5imOTeefSmmzI",
-                        "%7B%7D"
+                        "%7B%7D",
+                        "admin:read user:profile:write customer"
                 ));
     }
 
@@ -81,6 +89,7 @@ class AuthorizationControllerAPIFixtures {
                         "6779ef20e75817b79602",
                         uri.toString(),
                         "6779ef20e75817b79602",
+                        "e526b1b1b138484d747f63d55658ce41c4c084341afe4556a790243045eb96292f13de9e5407ac21b7e87a565c7d71dac5ef102fa1c004843f5ccaf4f3dffef26b38d7a1184d187e1fd20275784484850b861eea74342459726854c163e01010e091c1964aa89d01395948dd18aaf44e5944f4771d05e696161e42e8551a49e5cd863e880c17eace5f8847a069ce71aefe947678f749457961037e6d70804747f31517618fb791b5518a69a9d20b35c7561b3653e5cbb870a4588f380cf53b6285647d5c46a2bb27cc4a1a34332223cc6f8dbd728a360e853665ba5df9112e68f95074065121292cb4d5c95a9630e4ff6142a7f335c88cbe9b2b089f7c4e470e",
                         "S256CodeVerifierExample123!"
                 ));
     }
@@ -90,6 +99,7 @@ class AuthorizationControllerAPIFixtures {
                 .map(uri -> Arguments.of(
                         "authorization_code",
                         "6779ef20e75817b79602",
+                        "e526b1b1b138484d747f63d55658ce41c4c084341afe4556a790243045eb96292f13de9e5407ac21b7e87a565c7d71dac5ef102fa1c004843f5ccaf4f3dffef26b38d7a1184d187e1fd20275784484850b861eea74342459726854c163e01010e091c1964aa89d01395948dd18aaf44e5944f4771d05e696161e42e8551a49e5cd863e880c17eace5f8847a069ce71aefe947678f749457961037e6d70804747f31517618fb791b5518a69a9d20b35c7561b3653e5cbb870a4588f380cf53b6285647d5c46a2bb27cc4a1a34332223cc6f8dbd728a360e853665ba5df9112e68f95074065121292cb4d5c95a9630e4ff6142a7f335c88cbe9b2b089f7c4e470e",
                         uri,
                         "6779ef20e75817b79602",
                         "S256CodeVerifierExample123!"

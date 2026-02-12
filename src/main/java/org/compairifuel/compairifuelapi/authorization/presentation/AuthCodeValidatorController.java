@@ -2,6 +2,9 @@ package org.compairifuel.compairifuelapi.authorization.presentation;
 
 import jakarta.inject.Inject;
 import lombok.extern.java.Log;
+
+import java.util.List;
+
 import org.compairifuel.compairifuelapi.authorization.service.IAuthCodeValidatorService;
 
 @Log(topic = "AuthCodeValidatorController")
@@ -13,7 +16,7 @@ public class AuthCodeValidatorController {
         this.authCodeValidatorService = authCodeValidatorService;
     }
 
-    public boolean authenticateToken(String accessToken) {
-        return authCodeValidatorService.isValid(accessToken.replace(authCodeValidatorService.getTokenType(),"").trim());
+    public boolean authenticateToken(String accessToken, List<String> requiredScopes) {
+        return authCodeValidatorService.isValid(accessToken.replace(authCodeValidatorService.getTokenType(),"").trim(), requiredScopes);
     }
 }

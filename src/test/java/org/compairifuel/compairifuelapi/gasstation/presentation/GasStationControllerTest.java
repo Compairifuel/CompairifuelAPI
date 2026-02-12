@@ -26,7 +26,7 @@ class GasStationControllerTest {
         sut.setGasStationService(gasStationService);
         sut.setAuthCodeValidatorController(authCodeValidatorController);
 
-        when(authCodeValidatorController.authenticateToken(anyString())).thenReturn(true);
+        when(authCodeValidatorController.authenticateToken(anyString(), anyList())).thenReturn(true);
     }
 
     @Test

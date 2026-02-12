@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
+
 class AuthCodeValidatorControllerTest {
     private final AuthCodeValidatorController sut = new AuthCodeValidatorController();
     private IAuthCodeValidatorService authCodeValidatorService;
@@ -25,35 +27,35 @@ class AuthCodeValidatorControllerTest {
     void authenticateTokenReturnsTrue() {
         // Arrange
         String token = "valid.token";
-        when(authCodeValidatorService.isValid(token)).thenReturn(true);
+        when(authCodeValidatorService.isValid(token, List.of())).thenReturn(true);
 
         // Act
-        boolean result = sut.authenticateToken(token);
+        boolean result = sut.authenticateToken(token, List.of());
 
         // Assert
         assertTrue(result);
-        verify(authCodeValidatorService).isValid(token);
+        verify(authCodeValidatorService).isValid(token, List.of());
     }
 
     @Test
     void authenticateTokenThrowsForbiddenException() {
         // Arrange
         String token = "invalid.token";
-        when(authCodeValidatorService.isValid(token)).thenThrow(new ForbiddenException());
+        when(authCodeValidatorService.isValid(token, List.of())).thenThrow(new ForbiddenException());
 
         // Assert
-        assertThrowsExactly(ForbiddenException.class, () -> sut.authenticateToken(token));
-        verify(authCodeValidatorService).isValid(token);
+        assertThrowsExactly(ForbiddenException.class, () -> sut.authenticateToken(token, List.of()));
+        verify(authCodeValidatorService).isValid(token, List.of());
     }
 
     @Test
     void authenticateTokenThrowsInternalServerErrorException() {
         // Arrange
         String token = "server.error.token";
-        when(authCodeValidatorService.isValid(token)).thenThrow(new InternalServerErrorException());
+        when(authCodeValidatorService.isValid(token, List.of())).thenThrow(new InternalServerErrorException());
 
         // Assert
-        assertThrowsExactly(InternalServerErrorException.class, () -> sut.authenticateToken(token));
-        verify(authCodeValidatorService).isValid(token);
+        assertThrowsExactly(InternalServerErrorException.class, () -> sut.authenticateToken(token, List.of()));
+        verify(authCodeValidatorService).isValid(token, List.of());
     }
 }
