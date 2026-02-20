@@ -1,10 +1,12 @@
 package org.compairifuel.compairifuelapi.gasstation.service.domain;
 
 import lombok.Data;
+import lombok.Generated;
 
 import java.util.List;
 
 @Data
+@Generated
 public class ResultDomain {
     private String type;
     private String id;
