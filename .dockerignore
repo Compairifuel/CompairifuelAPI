@@ -1,0 +1,27 @@
+## Ignore Github
+.github/
+## Ignore git
+.gitignore
+.git/
+## Ignore temporary files
+*.tmp
+*~
+## Ignore test files and directories
+/test/
+## Ignore env
+.env
+.env.template
+## Ignore IDE files
+.idea/
+.vscode/
+## Ignore local build
+target/
+## Igmore markdown files
+*.md
+## Ignore text files
+*.txt
+## Ignore http files
+*.http
+## Ignore docker files
+Dockerfile
+docker-compose.yml
