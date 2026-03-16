@@ -1,6 +1,5 @@
 increment: Patch
 commit-message-incrementing: Enabled  
-next-version: '1.0.0'
 
 tag-prefix: '[vV]'
 
