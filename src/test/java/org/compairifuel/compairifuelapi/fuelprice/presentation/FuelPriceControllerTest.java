@@ -1,6 +1,7 @@
 package org.compairifuel.compairifuelapi.fuelprice.presentation;
 
 import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
 import org.compairifuel.compairifuelapi.authorization.presentation.AuthCodeValidatorController;
 import org.compairifuel.compairifuelapi.fuelprice.service.IFuelPriceService;
@@ -40,7 +41,7 @@ class FuelPriceControllerTest {
         // Assert
         assertDoesNotThrow(() -> {
             // Act
-            Response response = sut.getPrices(fuelType, address, "Bearer token");
+            Response response = sut.getPrices(fuelType, address, null, null, "Bearer token");
 
             // Assert
             verify(fuelPriceService).getPrices(fuelType, address);
@@ -64,7 +65,7 @@ class FuelPriceControllerTest {
         // Assert
         Exception ex = assertThrows(NotFoundException.class, () -> {
             // Act
-            sut.getPrices(fuelType, address, "Bearer token");
+            sut.getPrices(fuelType, address, null, null, "Bearer token");
         });
         assertEquals(exceptionMessage, ex.getMessage());
     }
@@ -81,7 +82,7 @@ class FuelPriceControllerTest {
         // Assert
         assertDoesNotThrow(() -> {
             // Act
-            Response response = sut.getPrices(fuelType, latitude, longitude,"Bearer token");
+            Response response = sut.getPrices(fuelType, null, latitude, longitude, "Bearer token");
 
             // Assert
             verify(fuelPriceService).getPrices(fuelType, latitude, longitude);
@@ -106,7 +107,7 @@ class FuelPriceControllerTest {
         // Assert
         Exception ex = assertThrows(NotFoundException.class, () -> {
             // Act
-            sut.getPrices(fuelType, latitude, longitude, "Bearer token");
+            sut.getPrices(fuelType, null, latitude, longitude, "Bearer token");
         });
         assertEquals(exceptionMessage, ex.getMessage());
     }
@@ -151,6 +152,20 @@ class FuelPriceControllerTest {
         Exception ex = assertThrows(NotFoundException.class, () -> {
             // Act
             sut.getPrices(fuelType, address, latitude, longitude, "Bearer token");
+        });
+        assertEquals(exceptionMessage, ex.getMessage());
+    }
+
+    @Test
+    void getPricesWithFuelTypeThrowsBadRequestException() {
+        // Arrange
+        String fuelType = "diesel";
+        String exceptionMessage = "Invalid query parameters. Please provide either fuelType and address or fuelType, latitude and longitude.";
+
+        // Assert
+        Exception ex = assertThrows(BadRequestException.class, () -> {
+            // Act
+            sut.getPrices(fuelType, null, null, null, "Bearer token");
         });
         assertEquals(exceptionMessage, ex.getMessage());
     }

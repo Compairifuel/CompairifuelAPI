@@ -3,6 +3,7 @@ package org.compairifuel.compairifuelapi.fuelprice.presentation;
 import jakarta.inject.Inject;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -28,31 +29,21 @@ public class FuelPriceController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/prices/{fuelType}/{address}")
-    public Response getPrices(@PathParam("fuelType") String fuelType, @PathParam("address") String address, @HeaderParam("Authorization") String authorization) {
+    @Path("/prices")
+    public Response getPrices(@QueryParam("fuelType") @NotBlank(message="Fuel type is required.") String fuelType, @QueryParam("address") String address, @QueryParam("lat") @Min(value=-180,message="latitude cannot be less than -180.") @Max(value=180,message="latitude cannot be greater that 180.") Double latitude, @QueryParam("lng") @Min(value=-180,message="longitude cannot be less than -180.") @Max(value=180,message="longitude cannot be greater that 180.") Double longitude, @HeaderParam("Authorization") String authorization) {
         authCodeValidatorController.authenticateToken(authorization, List.of());
 
-        List<FuelPriceResponseDTO> prices = fuelPriceService.getPrices(fuelType, address);
-        return Response.ok().entity(prices).build();
-    }
+        List<FuelPriceResponseDTO> prices;
+        if(fuelType != null && address != null && latitude != null && longitude != null) {
+            prices = fuelPriceService.getPrices(fuelType, address, latitude, longitude);
+        } else if(fuelType != null && address != null) {
+            prices = fuelPriceService.getPrices(fuelType, address);
+        } else if(fuelType != null && latitude != null && longitude != null) {
+            prices = fuelPriceService.getPrices(fuelType, latitude, longitude);
+        } else {
+            throw new BadRequestException("Invalid query parameters. Please provide either fuelType and address or fuelType, latitude and longitude.");
+        }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/prices/{fuelType}/{latitude}/{longitude}")
-    public Response getPrices(@PathParam("fuelType") String fuelType, @PathParam("latitude") @Min(value=-180,message="latitude cannot be less than -180.") @Max(value=180,message="latitude cannot be greater that 180.") double latitude, @PathParam("longitude") @Min(value=-180,message="longitude cannot be less than -180.") @Max(value=180,message="longitude cannot be greater that 180.") double longitude, @HeaderParam("Authorization") String authorization) {
-        authCodeValidatorController.authenticateToken(authorization, List.of());
-
-        List<FuelPriceResponseDTO> prices = fuelPriceService.getPrices(fuelType, latitude, longitude);
-        return Response.ok().entity(prices).build();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/prices/{fuelType}/{address}/{latitude}/{longitude}")
-    public Response getPrices(@PathParam("fuelType") String fuelType,@PathParam("address") String address, @PathParam("latitude") @Min(value=-180,message="latitude cannot be less than -180.") @Max(value=180,message="latitude cannot be greater that 180.") double latitude, @PathParam("longitude") @Min(value=-180,message="longitude cannot be less than -180.") @Max(value=180,message="longitude cannot be greater that 180.") double longitude, @HeaderParam("Authorization") String authorization) {
-        authCodeValidatorController.authenticateToken(authorization, List.of());
-
-        List<FuelPriceResponseDTO> prices = fuelPriceService.getPrices(fuelType, address, latitude, longitude);
         return Response.ok().entity(prices).build();
     }
 }
