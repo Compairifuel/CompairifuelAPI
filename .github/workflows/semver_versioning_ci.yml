@@ -42,32 +42,33 @@ jobs:
         run: |
           echo "GitVersion variables:"
           echo "  SemVer: ${{ steps.gitversion.outputs.semVer }}"
+          echo "  FullSemVer: ${{ steps.gitversion.outputs.fullSemVer }}"
 
       - name: Configure Git
-        if: ${{ steps.gitversion.outputs.semVer != '' && github.ref == 'refs/heads/main' }}
+        if: ${{ steps.gitversion.outputs.fullSemVer != '' && github.ref == 'refs/heads/main' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create Tag
-        if: ${{ steps.gitversion.outputs.semVer != '' && github.ref == 'refs/heads/main' }}
+        if: ${{ steps.gitversion.outputs.fullSemVer != '' && github.ref == 'refs/heads/main' }}
         id: create_tag
         run: |
           exists=false
-          tag_name="V${{ steps.gitversion.outputs.semVer }}"
+          tag_name="V${{ steps.gitversion.outputs.fullSemVer }}"
 
           if git rev-parse "refs/tags/${tag_name}" >/dev/null 2>&1; then
             echo "Tag ${tag_name} already exists."
             exists=true
           else
-            git tag -a "${tag_name}" -m "Release V${{ steps.gitversion.outputs.semVer }}"
+            git tag -a "${tag_name}" -m "Release V${{ steps.gitversion.outputs.fullSemVer }}"
             git push origin "${tag_name}" || { echo "Failed to push tag"; exit 1; }
           fi
           echo "exists=${exists}" >> $GITHUB_OUTPUT
           echo "tag_name=${tag_name}" >> $GITHUB_OUTPUT
       
       - name: Create GitHub Release
-        if: ${{ steps.gitversion.outputs.semVer != '' && steps.create_tag.outputs.exists == 'false' && steps.create_tag.outputs.tag_name != '' && steps.create_tag.outcome == 'success' && github.ref == 'refs/heads/main' }}
+        if: ${{ steps.gitversion.outputs.fullSemVer != '' && steps.create_tag.outputs.exists == 'false' && steps.create_tag.outputs.tag_name != '' && steps.create_tag.outcome == 'success' && github.ref == 'refs/heads/main' }}
         uses: actions/create-release@v1
         with:
           tag_name: ${{ steps.create_tag.outputs.tag_name }}
