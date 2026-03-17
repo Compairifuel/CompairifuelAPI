@@ -1,6 +1,8 @@
 package org.compairifuel.compairifuelapi.gasstation.presentation;
 
 import jakarta.inject.Inject;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -25,9 +27,9 @@ public class GasStationController {
     }
 
     @GET
-    @Path("/gasStations/{lat}/{lng}")
+    @Path("/gasStations")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getGasStations(@PathParam("lat") double latitude, @PathParam("lng") double longitude, @HeaderParam("Authorization") String authorization) {
+    public Response getGasStations(@QueryParam("lat") @Min(value=-180,message="latitude cannot be less than -180.") @Max(value=180,message="latitude cannot be greater that 180.") double latitude, @QueryParam("lng") @Min(value=-180,message="longitude cannot be less than -180.") @Max(value=180,message="longitude cannot be greater that 180.") double longitude, @HeaderParam("Authorization") String authorization) {
         authCodeValidatorController.authenticateToken(authorization, List.of());
 
         List<GasStationResponseDTO> gasStationEntities = gasStationService.getGasStations(latitude, longitude, 25000);
