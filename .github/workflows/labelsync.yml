@@ -8,7 +8,7 @@ on:
 jobs:
   label_sync:
     name: Automatic Label Synchronization
-    uses: compairifuel/.github/.github/workflows/reusable-labelsync.yml@main
+    uses: compairifuel/.github/.github/workflows/reusable-labelsync.yml@V1.1.0-4
     permissions:
       contents: read
       issues: write
