@@ -10,7 +10,7 @@ on:
 jobs:
   semgrep:
     name: Semgrep Scan
-    uses: compairifuel/.github/.github/workflows/reusable-codesecscan.yml@V1.1.0-4
+    uses: compairifuel/.github/.github/workflows/reusable-codesecscan.yml@V1.1.0-5
     permissions:
       contents: read
       security-events: write
