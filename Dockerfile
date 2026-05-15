@@ -1,14 +1,19 @@
-FROM maven:3.9.11-eclipse-temurin-17 as builder
+FROM eclipse-temurin:17-jdk-alpine AS builder
+WORKDIR /build
 
-COPY . .
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
 
-RUN mvn clean package
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
+
+COPY src src
+RUN ./mvnw clean package -DskipTests -B
 
 FROM quay.io/wildfly/wildfly:27.0.0.Final-jdk17
 
 ENV JAVA_TOOL_OPTIONS -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8787
 
-COPY --from=builder target/ROOT.war /opt/jboss/wildfly/standalone/deployments/
+COPY --from=builder /build/target/ROOT.war /opt/jboss/wildfly/standalone/deployments/
 
-EXPOSE 8080
-EXPOSE 8787
+EXPOSE 8080 8787
